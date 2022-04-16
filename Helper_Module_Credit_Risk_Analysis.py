@@ -23,11 +23,7 @@ def Custom_Helper_Module():
     Check_Correlation(input_X_train)
     Check_Multicollinearity(input_X_train, numerical_feature_list)
     Make_Feature_Selection(input_X_train, input_y_train, max_validation_round)
-    Remove_Outlies(input_dataset, input_features)
-
-    Convert_Datetime_To_Months(df, column)
-    Convert_Loan_Tenure_To_Months(df, column)
-    Convert_Employment_Length_To_Years(df, column)
+    Remove_Outliers(input_dataset, input_features)
     '''
     return print(print_statement)
 
@@ -285,8 +281,8 @@ def Make_Feature_Selection(input_X_train, input_y_train, max_validation_round):
     print(selected_feature_list)
 
 
-# remove outlies upto 0.27% (or fraction 0.0027)
-def Remove_Outlies(input_dataset_X, input_dataset_y, input_features):
+# remove outliers upto 0.27% (or fraction 0.0027)
+def Remove_Outliers(input_dataset_X, input_dataset_y, input_features):
     outliers_removal_factor = 0.002700 # beyond 3 sigma for normal distribution
     total_data_removed = 0
     initial_data_length = len(input_dataset_X.index)
@@ -346,28 +342,4 @@ def Remove_Outlies(input_dataset_X, input_dataset_y, input_features):
     all_removed_counter_percentage = round((all_removed_counter*100/initial_data_length), 2)
     print('Total outlier removed: ', all_removed_counter, '(',all_removed_counter_percentage,'%)')
     print('\n')
-
-
-# convert datetime columns to month
-def Convert_Datetime_To_Months(df, column):
-    today_date = pd.to_datetime('2020-12-31') # we have data upto December 2014
-    df[column] = pd.to_datetime(df[column], format = '%b-%y')
-    df['months_since_' + column] = round(pd.to_numeric((today_date - df[column]) / np.timedelta64(1, 'M')))
-    df['months_since_' + column] = df['months_since_' + column].apply(lambda x: df['months_since_' + column].max() if x < 0 else x)
-    df.drop(columns = [column], inplace = True)
-
-
-# convert loan tenure to months
-def Convert_Loan_Tenure_To_Months(df, column):
-    df[column] = pd.to_numeric(df[column].str.replace(' months', ''))
-
-
-# convert emploment length to year
-def Convert_Employment_Length_To_Years(df, column):
-    df[column] = df[column].str.replace(r'\+ years', '', regex=True)
-    df[column] = df[column].str.replace('< 1 year', str(0))
-    df[column] = df[column].str.replace(' years', '')
-    df[column] = df[column].str.replace(' year', '')
-    df[column] = pd.to_numeric(df[column])
-
 
