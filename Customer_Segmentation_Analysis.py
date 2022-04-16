@@ -31,7 +31,7 @@ py.offline.init_notebook_mode(connected = True)
 
 # %%
 # import helper module
-from Helper_Module_Credit_Risk_Analysis import *
+from Helper_Module_Customer_Segmentation import *
 Custom_Helper_Module()
 
 # %% [markdown]
@@ -168,6 +168,9 @@ X.head()
 standard_scaler = StandardScaler()
 X[column_list_for_kmeans] = standard_scaler.fit_transform(X[column_list_for_kmeans])
 
+
+# %%
+X.head()
 
 # %%
 inertia = []
@@ -438,10 +441,12 @@ plt.show()
 PCA_components = pd.DataFrame(principalComponents)
 
 # %%
-# first 3 PCA features explain > 80% of the data variance
-# so we will build model with first 3 princiapl components
+# first 2 PCA features explain > 70% of the data variance
+# so we will build model with first 2 princiapl components
 selected_PCA_components = PCA_components.iloc[:,:2]
-print(selected_PCA_components)
+
+# %%
+selected_PCA_components.head()
 
 # %%
 inertia = []
@@ -474,7 +479,7 @@ model_4_silhouette_score = silhouette_score(selected_PCA_components, kmeans.labe
 print('Silhouette score: {:.2f}'.format(model_4_silhouette_score))
 
 # %%
-# add the cluster label and inverse scalar transformation
+# add the cluster label to the dataframe
 df['Cluster'] = labels.tolist()
 
 
@@ -505,7 +510,7 @@ df = model_4_df.copy()
 
 # %%
 # to compare attributes of the different clusters, lets find the 
-# average of all variables across each cluster
+# median of all variables across each cluster
 median_df = df.groupby(['Cluster'], as_index=False).median()
 median_df
 
